@@ -38,7 +38,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
     int moveCounter;
     AIAgent agent;
     Boolean agentwins;
-    Stack temporary;
+    Stack<Move> temporary;
 
 
     public ChessProject(){
@@ -133,7 +133,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
       white2Move = true;
       agent = new AIAgent();
       agentwins = false;
-      temporary = new Stack();
+      temporary = new Stack<Move>();
     }
 
 /*
@@ -143,8 +143,8 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
   bottom of the board it turns into a Queen (this should be handled where the move is actually being made and not in this
   method).
 */
-private Stack getWhitePawnSquares(int x, int y, String piece){
-  Stack moves = new Stack();
+private Stack<?> getWhitePawnSquares(int x, int y, String piece){
+  Stack<?> moves = new Stack<Object>();
 
 // To be completed...
 
@@ -213,9 +213,9 @@ private Boolean checkSurroundingSquares(Square s){
   going to be placing the piece back on the board, if we are not taking our own piece and if the resulting landing square
   is not adjacent to the enemy King.
 */
-private Stack getKingSquares(int x, int y, String piece){
+private Stack<Move> getKingSquares(int x, int y, String piece){
   Square startingSquare = new Square(x, y, piece);
-  Stack moves = new Stack();
+  Stack<Move> moves = new Stack<Move>();
   Move validM, validM2, validM3, validM4;
   int tmpx1 = x+1;
   int tmpx2 = x-1;
@@ -376,9 +376,9 @@ private Stack getKingSquares(int x, int y, String piece){
 /*
     Method to return all the possible moves that a Queen can make
 */
-private Stack getQueenMoves(int x, int y, String piece){
-  Stack completeMoves = new Stack();
-  Stack tmpMoves = new Stack();
+private Stack<Move> getQueenMoves(int x, int y, String piece){
+  Stack<Move> completeMoves = new Stack<Move>();
+  Stack<Move> tmpMoves = new Stack<Move>();
   Move tmp;
   /*
       The Queen is a pretty easy piece to figure out if you have completed the
@@ -429,9 +429,9 @@ private Stack getQueenMoves(int x, int y, String piece){
                             _|_____________|___________|_________|___________|___________|_
                              |             |           |         |           |           |
 */
-private Stack getRookMoves(int x, int y, String piece){
+private Stack<Move> getRookMoves(int x, int y, String piece){
   Square startingSquare = new Square(x, y, piece);
-  Stack moves = new Stack();
+  Stack<Move> moves = new Stack<Move>();
   Move validM, validM2, validM3, validM4;
   /*
     There are four possible directions that the Rook can move to:
@@ -567,9 +567,9 @@ private Stack getRookMoves(int x, int y, String piece){
                                |             |           |         |           |           |
 
 */
-private Stack getBishopMoves(int x, int y, String piece){
+private Stack<Move> getBishopMoves(int x, int y, String piece){
   Square startingSquare = new Square(x, y, piece);
-  Stack moves = new Stack();
+  Stack<Move> moves = new Stack<Move>();
   Move validM, validM2, validM3, validM4;
   /*
     The Bishop can move along any diagonal until it hits an enemy piece or its own piece
@@ -675,10 +675,10 @@ private Stack getBishopMoves(int x, int y, String piece){
     to get possible movements from. The Knight can essentially move in an L direction from any square on the
     board as long as the landing square is on the board and we can take an opponents piece but not our own piece.
 */
-private Stack getKnightMoves(int x, int y, String piece){
+private Stack<Move> getKnightMoves(int x, int y, String piece){
   Square startingSquare = new Square(x, y, piece);
-  Stack moves = new Stack();
-  Stack attackingMove = new Stack();
+  Stack<Square> moves = new Stack<Square>();
+  Stack<Move> attackingMove = new Stack<Move>();
   Square s = new Square(x+1, y+2, piece);
   moves.push(s);
   Square s1 = new Square(x+1, y-2, piece);
@@ -720,7 +720,7 @@ private Stack getKnightMoves(int x, int y, String piece){
 /*
         Method to colour a stack of Squares
 */
-private void colorSquares(Stack squares){
+private void colorSquares(Stack<Square> squares){
   Border greenBorder = BorderFactory.createLineBorder(Color.GREEN, 3);
   while(!squares.empty()){
     Square s = (Square)squares.pop();
@@ -733,10 +733,10 @@ private void colorSquares(Stack squares){
 /*
     Method to get the landing square of a bunch of moves...
 */
-private void getLandingSquares(Stack found){
+private void getLandingSquares(Stack<Move> found){
   Move tmp;
   Square landing;
-  Stack squares = new Stack();
+  Stack<Square> squares = new Stack<Square>();
   while(!found.empty()){
     tmp = (Move)found.pop();
     landing = (Square)tmp.getLanding();
@@ -749,8 +749,8 @@ private void getLandingSquares(Stack found){
 /*
   Method to find all the White Pieces.
 */
-  private Stack findWhitePieces(){
-    Stack squares = new Stack();
+  private Stack<Square> findWhitePieces(){
+    Stack<Square> squares = new Stack<Square>();
     String icon;
     int x;
     int y;
@@ -815,7 +815,7 @@ private void getLandingSquares(Stack found){
   /*
     The method printStack takes in a Stack of Moves and prints out all possible moves.
   */
-private void printStack(Stack input){
+private void printStack(Stack<Move> input){
   Move m;
   Square s, l;
   while(!input.empty()){
@@ -826,7 +826,8 @@ private void printStack(Stack input){
   }
 }
 
-  private void makeAIMove(){
+  @SuppressWarnings("unchecked")
+private void makeAIMove(){
     /*
       When the AI Agent decides on a move, a red border shows the square from where the move started and the
       landing square of the move.
@@ -834,14 +835,14 @@ private void printStack(Stack input){
     resetBorders();
     layeredPane.validate();
     layeredPane.repaint();
-    Stack white = findWhitePieces();
-    Stack completeMoves = new Stack();
+    Stack<Square> white = findWhitePieces();
+    Stack<Move> completeMoves = new Stack<Move>();
     Move tmp;
     while(!white.empty()){
       Square s = (Square)white.pop();
       String tmpString = s.getName();
-      Stack tmpMoves = new Stack();
-      Stack temporary = new Stack();
+      Stack<Move> tmpMoves = new Stack<Move>();
+      Stack<?> temporary = new Stack<Object>();
       /*
           We need to identify all the possible moves that can be made by the AI Opponent
       */
@@ -868,7 +869,7 @@ private void printStack(Stack input){
         completeMoves.push(tmp);
       }
     }
-    temporary = (Stack)completeMoves.clone();
+    temporary = (Stack<Move>)completeMoves.clone();
     getLandingSquares(temporary);
     printStack(temporary);
 /*
@@ -891,7 +892,7 @@ private void printStack(Stack input){
       out to the standard output.
     */
       System.out.println("=============================================================");
-      Stack testing = new Stack();
+      Stack<Move> testing = new Stack<Move>();
       while(!completeMoves.empty()){
         Move tmpMove = (Move)completeMoves.pop();
         Square s1 = (Square)tmpMove.getStart();
@@ -1539,7 +1540,7 @@ private void printStack(Stack input){
               }
             }
         }
-        else if(pieceName.equals("BlackPawn")){
+        else if(pieceName.contains("BlackPawn")){
           if(startY == 6){ // This is were the pawn is making its first move....
             /*
             if the pawn is makeing ites first movement....
@@ -1598,7 +1599,7 @@ private void printStack(Stack input){
             }
           }
         }
-        else if(pieceName.equals("WhitePawn")){
+        else if(pieceName.contains("WhitePawn")){
 			       if(startY == 1){
                if(((xMovement == 0))&&((yMovement==1)||((yMovement)==2))){
                  if(yMovement==2){
