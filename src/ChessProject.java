@@ -150,12 +150,26 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		Square startingSquare = new Square(x, y, piece);
 		Stack<Move> moves = new Stack<Move>();
 		Move validM, validM2, validM3, validM4;
+		int startYPos = y;// start position for the pawn
 		int tmpx1 = x + 1;
 		int tmpx2 = x - 1;
 		int tmpy1 = y + 1;// only one allowed for now
 		int tmpy2 = y - 1;
+		int tmpy3 = y + 2;// allow to move two squares
 
 		if (!((tmpy1 > 7))) {
+
+			if (startYPos == 1) {
+				Square tmp3 = new Square(x, tmpy3, piece);
+				validM = new Move(startingSquare, tmp3);
+				if (!piecePresent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
+					moves.push(validM);
+				} else {
+					if (checkWhiteOponent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
+						moves.push(validM);
+					}
+				}
+			}
 
 			Square tmp = new Square(x, tmpy1, piece);
 			validM = new Move(startingSquare, tmp);
