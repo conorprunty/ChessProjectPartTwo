@@ -158,14 +158,12 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		if (!((tmpy1 > 7))) {
 
 			Square tmp = new Square(x, tmpy1, piece);
-			if (checkSurroundingSquares(tmp)) {
-				validM = new Move(startingSquare, tmp);
-				if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+			validM = new Move(startingSquare, tmp);
+			if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+				moves.push(validM);
+			} else {
+				if (checkWhiteOponent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
 					moves.push(validM);
-				} else {
-					if (checkWhiteOponent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
-						moves.push(validM);
-					}
 				}
 			}
 		}
@@ -845,17 +843,17 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			 * the AI Opponent
 			 */
 			if (tmpString.contains("Knight")) {
-				tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
+				// tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Bishop")) {
-				tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
+				// tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Pawn")) {
 				tmpMoves = getWhitePawnSquares(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Rook")) {
-				tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
+				// tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Queen")) {
-				tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
+				// tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("King")) {
-				tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
+				// tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
 			}
 
 			while (!tmpMoves.empty()) {
@@ -864,7 +862,9 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			}
 		}
 		temporary = (Stack<Move>) completeMoves.clone();
-		// getLandingSquares(temporary);
+		// TODO undo this once 'check' is fixed to easily show if your king is
+		// in check
+		getLandingSquares(temporary);
 
 		// temp removal of this method as it prints out all possible moves to
 		// the console
