@@ -22,6 +22,7 @@ import javax.swing.BoxLayout;
 */
 
 public class ChessProject extends JFrame implements MouseListener, MouseMotionListener {
+	int userChoice;
 	JLayeredPane layeredPane;
 	JPanel chessBoard;
 	JLabel chessPiece;
@@ -137,6 +138,9 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		temporary = new Stack<Move>();
 	}
 
+	private void userChoice(int n){
+		userChoice = n;
+	}
 	/*
 	 * Method to check were a Black Pawn can move to. There are two main
 	 * conditions here. Either the Black Pawn is in its starting position in
@@ -157,32 +161,34 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		int tmpy2 = y - 1;
 		int tmpy3 = y + 2;// allow to move two squares
 
-		Square tmp3 = new Square(x, tmpy3, piece);
-		Square tmp = new Square(x, tmpy1, piece);
-		Square takePiece1 = new Square(tmpx2, tmpy1, piece);
-		Square takePiece2 = new Square(tmpx1, tmpy1, piece);
-		if (startYPos == 1) {
-			validM = new Move(startingSquare, tmp3);
-			if (!piecePresent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
-				if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
-					moves.push(validM);
+		if (!(x < 0 || x > 7 || y < 0 || y > 7)) {
+			Square tmp3 = new Square(x, tmpy3, piece);
+			Square tmp = new Square(x, tmpy1, piece);
+			Square takePiece1 = new Square(tmpx2, tmpy1, piece);
+			Square takePiece2 = new Square(tmpx1, tmpy1, piece);
+			if (startYPos == 1) {
+				validM = new Move(startingSquare, tmp3);
+				if (!piecePresent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
+					if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+						moves.push(validM);
+					}
 				}
 			}
-		}
-		validM2 = new Move(startingSquare, tmp);
-		validM3 = new Move(startingSquare, takePiece1);
-		validM4 = new Move(startingSquare, takePiece2);
-		if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
-			moves.push(validM2);
-		}
-		if (piecePresent(((takePiece1.getXC() * 75) + 20), (((takePiece1.getYC() * 75) + 20)))) {
-			if (!((tmpx2 < 0) || (tmpx1 > 7))) {
-				moves.push(validM3);
+			validM2 = new Move(startingSquare, tmp);
+			validM3 = new Move(startingSquare, takePiece1);
+			validM4 = new Move(startingSquare, takePiece2);
+			if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+				moves.push(validM2);
 			}
-		}
-		if (piecePresent(((takePiece2.getXC() * 75) + 20), (((takePiece2.getYC() * 75) + 20)))) {
-			if (!((tmpx2 < 0) || (tmpx1 > 7))) {
-				moves.push(validM4);
+			if (piecePresent(((takePiece1.getXC() * 75) + 20), (((takePiece1.getYC() * 75) + 20)))) {
+				if (!((tmpx2 < 0) || (tmpx1 > 7))) {
+					moves.push(validM3);
+				}
+			}
+			if (piecePresent(((takePiece2.getXC() * 75) + 20), (((takePiece2.getYC() * 75) + 20)))) {
+				if (!((tmpx2 < 0) || (tmpx1 > 7))) {
+					moves.push(validM4);
+				}
 			}
 		}
 		return moves;
@@ -921,11 +927,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			}
 			System.out.println("=============================================================");
 			Border redBorder = BorderFactory.createLineBorder(Color.RED, 3);
-			Stack<Move> tmpMoves2 = new Stack<Move>();
 			Move selectedMove = agent.randomMove(testing);
-
-			tmpMoves2.push(selectedMove);
-			getLandingSquares(tmpMoves2);
 
 			Square startingPoint = (Square) selectedMove.getStart();
 			Square landingPoint = (Square) selectedMove.getLanding();
@@ -1720,7 +1722,9 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 					System.exit(0);
 				}
 			}
-			makeAIMove();
+			if(userChoice == 0){
+				makeAIMove();
+			}
 		} // end of the else condition
 	}// end of the mouseReleased event.
 
@@ -1758,6 +1762,15 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 				"Introduction to AI Continuous Assessment", JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 		System.out.println("The selected variable is : " + n);
-		frame.makeAIMove();
+		if (n == 0) {
+			frame.makeAIMove();
+		} else if (n == 1) {
+			JOptionPane.showMessageDialog(null, "This section hasn't been configured yet, please try again later.");
+			System.exit(1);
+		} else if (n == 2) {
+			JOptionPane.showMessageDialog(null, "This section hasn't been configured yet, please try again later.");
+			System.exit(1);
+		}
+		frame.userChoice(n);
 	}
 }
