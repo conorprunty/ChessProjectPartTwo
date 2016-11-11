@@ -796,6 +796,32 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		}
 		return squares;
 	}
+	
+	//method added to find the Black King
+	private Stack<Square> findBlackKing() {
+		Stack<Square> squares = new Stack<Square>();
+		String icon;
+		int x;
+		int y;
+		String pieceName;
+		for (int i = 0; i < 600; i += 75) {
+			for (int j = 0; j < 600; j += 75) {
+				y = i / 75;
+				x = j / 75;
+				Component tmp = chessBoard.findComponentAt(j, i);
+				if (tmp instanceof JLabel) {
+					chessPiece = (JLabel) tmp;
+					icon = chessPiece.getIcon().toString();
+					pieceName = icon.substring(0, (icon.length() - 4));
+					if (pieceName.contains("BlackKing")) {
+						Square stmp = new Square(x, y, pieceName);
+						squares.push(stmp);
+					}
+				}
+			}
+		}
+		return squares;
+	}
 
 	/*
 	 * This method checks if there is a piece present on a particular square.
@@ -985,7 +1011,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 
 		}
 		//used to get the squares where the AI agent is going to move AFTER their turn has been taken
-		//will be used to ensure white can't move into check
+		//will be used to ensure black can't move into check
 		Stack<Square> whiteAfterPlay = findWhitePieces();
 		Stack<Move> completeMovesAfterPlay = new Stack<Move>();
 		Move tmpAfterPlay;
@@ -1017,7 +1043,24 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			}
 		}
 		getLandingSquares(completeMovesAfterPlay);
-
+		
+		//get all black king moves, to be compared with all available moves in 'completeMovesAfterPlay'
+		Stack<Square> kingSquare = findBlackKing();
+		Stack<Move> kingMoves = new Stack<Move>();
+		Move tempKingMoves;
+		Square sq = (Square)kingSquare.pop();
+		String tmpStringOfKingMoves = sq.getName();
+		Stack<Move> tmpKingMoves = new Stack<Move>();
+		if (tmpStringOfKingMoves.contains("King")) {
+		tmpKingMoves = getKingSquares(sq.getXC(), sq.getYC(), sq.getName());
+		}
+		if(!tmpKingMoves.isEmpty()){
+			tempKingMoves = (Move)tmpKingMoves.pop();
+			kingMoves.push(tempKingMoves);
+		}
+		
+		
+		
 	}
 
 	// AI movements for the 2nd option
