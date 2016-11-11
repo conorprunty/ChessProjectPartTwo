@@ -157,29 +157,31 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		int tmpy2 = y - 1;
 		int tmpy3 = y + 2;// allow to move two squares
 
-		if (!((tmpy1 > 7))) {
-			Square tmp3 = new Square(x, tmpy3, piece);
-			Square tmp = new Square(x, tmpy1, piece);
-			Square takePiece1 = new Square(tmpx2, tmpy1, piece);
-			Square takePiece2 = new Square(tmpx1, tmpy1, piece);
-//			if (startYPos == 1) {
-//				validM = new Move(startingSquare, tmp3);
-//				if (!piecePresent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
-//					if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
-//						moves.push(validM);
-//					}
-//				}
-//			}
-			validM2 = new Move(startingSquare, tmp);
-			validM3 = new Move(startingSquare, takePiece1);
-			validM4 = new Move(startingSquare, takePiece1);
-			if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
-				moves.push(validM2);
+		Square tmp3 = new Square(x, tmpy3, piece);
+		Square tmp = new Square(x, tmpy1, piece);
+		Square takePiece1 = new Square(tmpx2, tmpy1, piece);
+		Square takePiece2 = new Square(tmpx1, tmpy1, piece);
+		if (startYPos == 1) {
+			validM = new Move(startingSquare, tmp3);
+			if (!piecePresent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
+				if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+					moves.push(validM);
+				}
 			}
-			if (piecePresent(((takePiece1.getXC() * 75) + 20), (((takePiece1.getYC() * 75) + 20)))){
+		}
+		validM2 = new Move(startingSquare, tmp);
+		validM3 = new Move(startingSquare, takePiece1);
+		validM4 = new Move(startingSquare, takePiece2);
+		if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+			moves.push(validM2);
+		}
+		if (piecePresent(((takePiece1.getXC() * 75) + 20), (((takePiece1.getYC() * 75) + 20)))) {
+			if (!((tmpx2 < 0) || (tmpx1 > 7))) {
 				moves.push(validM3);
 			}
-			if (piecePresent(((takePiece2.getXC() * 75) + 20), (((takePiece2.getYC() * 75) + 20)))){
+		}
+		if (piecePresent(((takePiece2.getXC() * 75) + 20), (((takePiece2.getYC() * 75) + 20)))) {
+			if (!((tmpx2 < 0) || (tmpx1 > 7))) {
 				moves.push(validM4);
 			}
 		}
