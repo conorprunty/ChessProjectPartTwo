@@ -217,13 +217,12 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		Boolean possible = false;
 		int x = s.getXC() * 75;
 		int y = s.getYC() * 75;
-		if (!((getPieceName((x + 75), y).contains("BlackKing")) || (getPieceName((x - 75), y).contains("BlackKing"))
-				|| (getPieceName(x, (y + 75)).contains("BlackKing"))
-				|| (getPieceName((x), (y - 75)).contains("BlackKing"))
-				|| (getPieceName((x + 75), (y + 75)).contains("BlackKing"))
-				|| (getPieceName((x - 75), (y + 75)).contains("BlackKing"))
-				|| (getPieceName((x + 75), (y - 75)).contains("BlackKing"))
-				|| (getPieceName((x - 75), (y - 75)).contains("BlackKing")))) {
+		if (!((getPieceName((x + 75), y).contains("King")) || (getPieceName((x - 75), y).contains("King"))
+				|| (getPieceName(x, (y + 75)).contains("King")) || (getPieceName((x), (y - 75)).contains("King"))
+				|| (getPieceName((x + 75), (y + 75)).contains("King"))
+				|| (getPieceName((x - 75), (y + 75)).contains("King"))
+				|| (getPieceName((x + 75), (y - 75)).contains("King"))
+				|| (getPieceName((x - 75), (y - 75)).contains("King")))) {
 			possible = true;
 		}
 		return possible;
@@ -418,6 +417,108 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		}
 		return moves;
 	} // end of the method getKingSquares()
+
+	private Stack<Move> getBlackKingSquares(int x, int y, String piece) {
+		Square startingSquare = new Square(x, y, piece);
+		Stack<Move> moves = new Stack<Move>();
+		Move validM, validM2, validM3, validM4;
+		int tmpx1 = x + 1;
+		int tmpx2 = x - 1;
+		int tmpy1 = y + 1;
+		int tmpy2 = y - 1;
+
+		if (!((tmpx1 > 7))) {
+			Square tmp = new Square(tmpx1, y, piece);
+			Square tmp1 = new Square(tmpx1, tmpy1, piece);
+			Square tmp2 = new Square(tmpx1, tmpy2, piece);
+			validM = new Move(startingSquare, tmp);
+			if (!piecePresent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+				moves.push(validM);
+			} else {
+				if (checkBlackOponent(((tmp.getXC() * 75) + 20), (((tmp.getYC() * 75) + 20)))) {
+					moves.push(validM);
+				}
+			}
+			if (!(tmpy1 > 7)) {
+				validM2 = new Move(startingSquare, tmp1);
+				if (!piecePresent(((tmp1.getXC() * 75) + 20), (((tmp1.getYC() * 75) + 20)))) {
+					moves.push(validM2);
+				} else {
+					if (checkBlackOponent(((tmp1.getXC() * 75) + 20), (((tmp1.getYC() * 75) + 20)))) {
+						moves.push(validM2);
+					}
+				}
+			}
+			if (!(tmpy2 < 0)) {
+				validM3 = new Move(startingSquare, tmp2);
+				if (!piecePresent(((tmp2.getXC() * 75) + 20), (((tmp2.getYC() * 75) + 20)))) {
+					moves.push(validM3);
+				} else {
+					System.out.println("The values that we are going to be looking at are : "
+							+ ((tmp2.getXC() * 75) + 20) + " and the y value is : " + ((tmp2.getYC() * 75) + 20));
+					if (checkBlackOponent(((tmp2.getXC() * 75) + 20), (((tmp2.getYC() * 75) + 20)))) {
+						moves.push(validM3);
+					}
+				}
+			}
+		}
+		if (!((tmpx2 < 0))) {
+			Square tmp3 = new Square(tmpx2, y, piece);
+			Square tmp4 = new Square(tmpx2, tmpy1, piece);
+			Square tmp5 = new Square(tmpx2, tmpy2, piece);
+			validM = new Move(startingSquare, tmp3);
+			if (!piecePresent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
+				moves.push(validM);
+			} else {
+				if (checkBlackOponent(((tmp3.getXC() * 75) + 20), (((tmp3.getYC() * 75) + 20)))) {
+					moves.push(validM);
+				}
+			}
+			if (!(tmpy1 > 7)) {
+				validM2 = new Move(startingSquare, tmp4);
+				if (!piecePresent(((tmp4.getXC() * 75) + 20), (((tmp4.getYC() * 75) + 20)))) {
+					moves.push(validM2);
+				} else {
+					if (checkBlackOponent(((tmp4.getXC() * 75) + 20), (((tmp4.getYC() * 75) + 20)))) {
+						moves.push(validM2);
+					}
+				}
+			}
+			if (!(tmpy2 < 0)) {
+				validM3 = new Move(startingSquare, tmp5);
+				if (!piecePresent(((tmp5.getXC() * 75) + 20), (((tmp5.getYC() * 75) + 20)))) {
+					moves.push(validM3);
+				} else {
+					if (checkBlackOponent(((tmp5.getXC() * 75) + 20), (((tmp5.getYC() * 75) + 20)))) {
+						moves.push(validM3);
+					}
+				}
+			}
+		}
+		Square tmp7 = new Square(x, tmpy1, piece);
+		Square tmp8 = new Square(x, tmpy2, piece);
+		if (!(tmpy1 > 7)) {
+			validM2 = new Move(startingSquare, tmp7);
+			if (!piecePresent(((tmp7.getXC() * 75) + 20), (((tmp7.getYC() * 75) + 20)))) {
+				moves.push(validM2);
+			} else {
+				if (checkBlackOponent(((tmp7.getXC() * 75) + 20), (((tmp7.getYC() * 75) + 20)))) {
+					moves.push(validM2);
+				}
+			}
+		}
+		if (!(tmpy2 < 0)) {
+			validM3 = new Move(startingSquare, tmp8);
+			if (!piecePresent(((tmp8.getXC() * 75) + 20), (((tmp8.getYC() * 75) + 20)))) {
+				moves.push(validM3);
+			} else {
+				if (checkBlackOponent(((tmp8.getXC() * 75) + 20), (((tmp8.getYC() * 75) + 20)))) {
+					moves.push(validM3);
+				}
+			}
+		}
+		return moves;
+	} // end of the method getBlackKingSquares()
 
 	/*
 	 * Method to return all the possible moves that a Queen can make
@@ -796,8 +897,8 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		}
 		return squares;
 	}
-	
-	//method added to find the Black King
+
+	// method added to find the Black King
 	private Stack<Square> findBlackKing() {
 		Stack<Square> squares = new Stack<Square>();
 		String icon;
@@ -1010,8 +1111,9 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			white2Move = false;
 
 		}
-		//used to get the squares where the AI agent is going to move AFTER their turn has been taken
-		//will be used to ensure black can't move into check
+		// used to get the squares where the AI agent is going to move AFTER
+		// their turn has been taken
+		// will be used to ensure black can't move into check
 		Stack<Square> whiteAfterPlay = findWhitePieces();
 		Stack<Move> completeMovesAfterPlay = new Stack<Move>();
 		Move tmpAfterPlay;
@@ -1042,25 +1144,26 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 				completeMovesAfterPlay.push(tmpAfterPlay);
 			}
 		}
-		getLandingSquares(completeMovesAfterPlay);
-		
-		//get all black king moves, to be compared with all available moves in 'completeMovesAfterPlay'
+		// getLandingSquares(completeMovesAfterPlay);
+
+		// get all black king moves, to be compared with all available moves in
+		// 'completeMovesAfterPlay'
 		Stack<Square> kingSquare = findBlackKing();
 		Stack<Move> kingMoves = new Stack<Move>();
 		Move tempKingMoves;
-		Square sq = (Square)kingSquare.pop();
+		Square sq = (Square) kingSquare.pop();
 		String tmpStringOfKingMoves = sq.getName();
 		Stack<Move> tmpKingMoves = new Stack<Move>();
 		if (tmpStringOfKingMoves.contains("King")) {
-		tmpKingMoves = getKingSquares(sq.getXC(), sq.getYC(), sq.getName());
+			tmpKingMoves = getBlackKingSquares(sq.getXC(), sq.getYC(), sq.getName());
 		}
-		if(!tmpKingMoves.isEmpty()){
-			tempKingMoves = (Move)tmpKingMoves.pop();
+		while (!tmpKingMoves.isEmpty()) {
+			tempKingMoves = (Move) tmpKingMoves.pop();
 			kingMoves.push(tempKingMoves);
 		}
-		
-		
-		
+		//highlight in green all valid Black King Moves
+		getLandingSquares(kingMoves);
+
 	}
 
 	// AI movements for the 2nd option
