@@ -42,6 +42,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 	Boolean agentwins;
 	Stack<Move> temporary;
 	Stack<Move> temporaryAfterPlay;
+	boolean isValidBlackKingMove;
 
 	public ChessProject() {
 		Dimension boardSize = new Dimension(600, 600);
@@ -1161,9 +1162,26 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			tempKingMoves = (Move) tmpKingMoves.pop();
 			kingMoves.push(tempKingMoves);
 		}
-		//highlight in green all valid Black King Moves
-		getLandingSquares(kingMoves);
+		// highlight in green all valid Black King Moves
+		// getLandingSquares(kingMoves);
 
+		while (!completeMovesAfterPlay.isEmpty()) {
+			Move a = completeMovesAfterPlay.pop();
+			int xCoord = a.getLanding().getXC();
+			int yCoord = a.getLanding().getYC();
+			if (!kingMoves.isEmpty()) {
+				Stack<Move> checkKingMoves = new Stack<Move>();
+				checkKingMoves = kingMoves;
+				while (!checkKingMoves.isEmpty()) {
+					Move b = checkKingMoves.pop();
+					int zCoord = b.getLanding().getXC();
+					int zzCoord = b.getLanding().getYC();
+					if((xCoord == zCoord)&&(yCoord == zzCoord)){
+						System.out.println("The Coord of the square(s) where black king can't move are:" + zCoord +","+zzCoord);
+					}
+				}
+			}
+		}
 	}
 
 	// AI movements for the 2nd option
