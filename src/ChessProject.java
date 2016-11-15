@@ -199,6 +199,33 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		return moves;
 	}
 
+	private Stack<Move> getWhitePawnAttackingSquares(int x, int y, String piece) {
+		Square startingSquare = new Square(x, y, piece);
+		Stack<Move> moves = new Stack<Move>();
+		Move validM3, validM4;
+		int tmpx1 = x + 1;
+		int tmpx2 = x - 1;
+		int tmpy1 = y + 1;
+
+		if (!(x < 0 || x > 7 || y < 0 || y > 7)) {
+			Square takePiece1 = new Square(tmpx2, tmpy1, piece);
+			Square takePiece2 = new Square(tmpx1, tmpy1, piece);
+			if (piecePresent(((takePiece1.getXC() * 75) + 20), (((takePiece1.getYC() * 75) + 20)))) {
+				validM3 = new Move(startingSquare, takePiece1);
+				if (!((tmpx2 < 0) || (tmpx1 > 7))) {
+					moves.push(validM3);
+				}
+			}
+			if (piecePresent(((takePiece2.getXC() * 75) + 20), (((takePiece2.getYC() * 75) + 20)))) {
+				validM4 = new Move(startingSquare, takePiece2);
+				if (!((tmpx2 < 0) || (tmpx1 > 7))) {
+					moves.push(validM4);
+				}
+			}
+		}
+		return moves;
+	}
+
 	/*
 	 * Method to check if there is a BlackKing in the surrounding squares of a
 	 * given Square. The method should return true if there is no King in any of
@@ -1131,7 +1158,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			} else if (tmpString.contains("Bishop")) {
 				tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Pawn")) {
-				tmpMoves = getWhitePawnSquares(s.getXC(), s.getYC(), s.getName());
+				tmpMoves = getWhitePawnAttackingSquares(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Rook")) {
 				tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Queen")) {
