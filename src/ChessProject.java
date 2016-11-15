@@ -1191,6 +1191,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		}
 		// highlight in green all valid Black King Moves
 		// getLandingSquares(kingMoves);
+		Stack<Move> blockedKingMoves = new Stack<Move>();
 
 		while (!completeMovesAfterPlay.isEmpty()) {
 			Move a = completeMovesAfterPlay.pop();
@@ -1204,6 +1205,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 				if ((xCoord == zCoord) && (yCoord == zzCoord)) {
 					System.out.println(
 							"The Coord of the square(s) where black king can't move are: " + zCoord + ", " + zzCoord);
+					blockedKingMoves.push(b);
 				}
 			}
 		}
