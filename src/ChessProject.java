@@ -43,6 +43,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 	Stack<Move> temporary;
 	Stack<Move> temporaryAfterPlay;
 	boolean isValidBlackKingMove;
+	Stack<Move> blockedKingMoves;
 
 	public ChessProject() {
 		Dimension boardSize = new Dimension(600, 600);
@@ -1010,6 +1011,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		 * When the AI Agent decides on a move, a red border shows the square
 		 * from where the move started and the landing square of the move.
 		 */
+		isValidBlackKingMove = false;
 		resetBorders();
 		layeredPane.validate();
 		layeredPane.repaint();
@@ -1182,6 +1184,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		Square sq = (Square) kingSquare.pop();
 		String tmpStringOfKingMoves = sq.getName();
 		Stack<Move> tmpKingMoves = new Stack<Move>();
+		blockedKingMoves = new Stack<Move>();
 		if (tmpStringOfKingMoves.contains("King")) {
 			tmpKingMoves = getBlackKingSquares(sq.getXC(), sq.getYC(), sq.getName());
 		}
@@ -1191,7 +1194,6 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		}
 		// highlight in green all valid Black King Moves
 		// getLandingSquares(kingMoves);
-		Stack<Move> blockedKingMoves = new Stack<Move>();
 
 		while (!completeMovesAfterPlay.isEmpty()) {
 			Move a = completeMovesAfterPlay.pop();
@@ -1206,6 +1208,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 					System.out.println(
 							"The Coord of the square(s) where black king can't move are: " + zCoord + ", " + zzCoord);
 					blockedKingMoves.push(b);
+					// isValidBlackKingMove = true;
 				}
 			}
 		}
@@ -1732,19 +1735,37 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 								 * cannot takes its own piece but can take an
 								 * opponents piece.
 								 */
-								if (piecePresent(e.getX(), e.getY())) {
-									if (pieceName.contains("White")) {
-										if (checkWhiteOponent(e.getX(), e.getY())) {
-											validMove = true;
+								Iterator<Move> iter = blockedKingMoves.iterator();
+								while (iter.hasNext()) {
+									Move b = iter.next();
+									int landingPosA = (e.getX() + 20) / 75;
+									int landingPosB = (e.getY() + 20) / 75;
+									int stackLandingPosA = b.getLanding().getXC();
+									int stackLandingPosB = b.getLanding().getYC();
+									if (landingPosA == stackLandingPosA
+											&& landingPosB == stackLandingPosB) {
+										isValidBlackKingMove = true;
+									}
+								}
+								if (isValidBlackKingMove == true) {
+									JOptionPane.showMessageDialog(null, "You cannot move yourself into check");
+									validMove = false;
+								} else {
+									if (piecePresent(e.getX(), e.getY())) {
+										if (pieceName.contains("White")) {
+											if (checkWhiteOponent(e.getX(), e.getY())) {
+												validMove = true;
+											}
+										} else {
+											if (checkBlackOponent(e.getX(), e.getY())) {
+												validMove = true;
+											}
 										}
 									} else {
-										if (checkBlackOponent(e.getX(), e.getY())) {
-											validMove = true;
-										}
+										validMove = true;
 									}
-								} else {
-									validMove = true;
 								}
+
 							}
 						}
 					}
