@@ -1221,6 +1221,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		 * When the AI Agent decides on a move, a red border shows the square
 		 * from where the move started and the landing square of the move.
 		 */
+		isValidBlackKingMove = false;
 		resetBorders();
 		layeredPane.validate();
 		layeredPane.repaint();
@@ -1258,7 +1259,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		temporary = (Stack<Move>) completeMoves.clone();
 		// TODO undo this once 'check' is fixed to easily show if your king is
 		// in check
-		getLandingSquares(temporary);
+		// getLandingSquares(temporary);
 
 		// temp removal of this method as it prints out all possible moves to
 		// the console
@@ -1348,6 +1349,77 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 				layeredPane.repaint();
 			}
 			white2Move = false;
+		}
+		// used to get the squares where the AI agent is going to move AFTER
+		// their turn has been taken
+		// will be used to ensure black can't move into check
+		Stack<Square> whiteAfterPlay = findWhitePieces();
+		Stack<Move> completeMovesAfterPlay = new Stack<Move>();
+		Move tmpAfterPlay;
+		while (!whiteAfterPlay.empty()) {
+			Square s = (Square) whiteAfterPlay.pop();
+			String tmpString = s.getName();
+			Stack<Move> tmpMoves = new Stack<Move>();
+			/*
+			 * We need to identify all the possible moves that can be made by
+			 * the AI Opponent
+			 */
+			if (tmpString.contains("Knight")) {
+				tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
+			} else if (tmpString.contains("Bishop")) {
+				tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
+			} else if (tmpString.contains("Pawn")) {
+				tmpMoves = getWhitePawnAttackingSquares(s.getXC(), s.getYC(), s.getName());
+			} else if (tmpString.contains("Rook")) {
+				tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
+			} else if (tmpString.contains("Queen")) {
+				tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
+			} else if (tmpString.contains("King")) {
+				tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
+			}
+
+			while (!tmpMoves.empty()) {
+				tmpAfterPlay = (Move) tmpMoves.pop();
+				completeMovesAfterPlay.push(tmpAfterPlay);
+			}
+		}
+		// getLandingSquares(completeMovesAfterPlay);
+
+		// get all black king moves, to be compared with all available moves in
+		// 'completeMovesAfterPlay'
+		Stack<Square> kingSquare = findBlackKing();
+		Stack<Move> kingMoves = new Stack<Move>();
+		Move tempKingMoves;
+		Square sq = (Square) kingSquare.pop();
+		String tmpStringOfKingMoves = sq.getName();
+		Stack<Move> tmpKingMoves = new Stack<Move>();
+		blockedKingMoves = new Stack<Move>();
+		if (tmpStringOfKingMoves.contains("King")) {
+			tmpKingMoves = getBlackKingSquares(sq.getXC(), sq.getYC(), sq.getName());
+		}
+		while (!tmpKingMoves.isEmpty()) {
+			tempKingMoves = (Move) tmpKingMoves.pop();
+			kingMoves.push(tempKingMoves);
+		}
+		// highlight in green all valid Black King Moves
+		// getLandingSquares(kingMoves);
+
+		while (!completeMovesAfterPlay.isEmpty()) {
+			Move a = completeMovesAfterPlay.pop();
+			int xCoord = a.getLanding().getXC();
+			int yCoord = a.getLanding().getYC();
+			Iterator<Move> iter = kingMoves.iterator();
+			while (iter.hasNext()) {
+				Move b = iter.next();
+				int zCoord = b.getLanding().getXC();
+				int zzCoord = b.getLanding().getYC();
+				if ((xCoord == zCoord) && (yCoord == zzCoord)) {
+					System.out.println(
+							"The Coord of the square(s) where black king can't move are: " + zCoord + ", " + zzCoord);
+					blockedKingMoves.push(b);
+					// isValidBlackKingMove = true;
+				}
+			}
 		}
 	}
 
