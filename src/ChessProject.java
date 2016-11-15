@@ -210,13 +210,13 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		if (!(x < 0 || x > 7 || y < 0 || y > 7)) {
 			Square takePiece1 = new Square(tmpx2, tmpy1, piece);
 			Square takePiece2 = new Square(tmpx1, tmpy1, piece);
-			if (piecePresent(((takePiece1.getXC() * 75) + 20), (((takePiece1.getYC() * 75) + 20)))) {
+			if (!piecePresent(((takePiece1.getXC() * 75) + 20), (((takePiece1.getYC() * 75) + 20)))) {
 				validM3 = new Move(startingSquare, takePiece1);
 				if (!((tmpx2 < 0) || (tmpx1 > 7))) {
 					moves.push(validM3);
 				}
 			}
-			if (piecePresent(((takePiece2.getXC() * 75) + 20), (((takePiece2.getYC() * 75) + 20)))) {
+			if (!piecePresent(((takePiece2.getXC() * 75) + 20), (((takePiece2.getYC() * 75) + 20)))) {
 				validM4 = new Move(startingSquare, takePiece2);
 				if (!((tmpx2 < 0) || (tmpx1 > 7))) {
 					moves.push(validM4);
