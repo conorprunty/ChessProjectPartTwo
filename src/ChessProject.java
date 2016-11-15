@@ -1169,16 +1169,14 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			Move a = completeMovesAfterPlay.pop();
 			int xCoord = a.getLanding().getXC();
 			int yCoord = a.getLanding().getYC();
-			if (!kingMoves.isEmpty()) {
-				Stack<Move> checkKingMoves = new Stack<Move>();
-				checkKingMoves = kingMoves;
-				while (!checkKingMoves.isEmpty()) {
-					Move b = checkKingMoves.pop();
-					int zCoord = b.getLanding().getXC();
-					int zzCoord = b.getLanding().getYC();
-					if((xCoord == zCoord)&&(yCoord == zzCoord)){
-						System.out.println("The Coord of the square(s) where black king can't move are:" + zCoord +","+zzCoord);
-					}
+			Iterator<Move> iter = kingMoves.iterator();
+			while (iter.hasNext()) {
+				Move b = iter.next();
+				int zCoord = b.getLanding().getXC();
+				int zzCoord = b.getLanding().getYC();
+				if ((xCoord == zCoord) && (yCoord == zzCoord)) {
+					System.out.println(
+							"The Coord of the square(s) where black king can't move are: " + zCoord + ", " + zzCoord);
 				}
 			}
 		}
