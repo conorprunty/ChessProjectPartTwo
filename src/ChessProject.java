@@ -1704,6 +1704,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 					}
 				}
 			} else if (pieceName.contains("King")) {
+				isValidBlackKingMove = false;
 				if ((xMovement == 0) && (yMovement == 0)) {
 					validMove = false;
 				} else {
@@ -1742,13 +1743,12 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 									int landingPosB = (e.getY() + 20) / 75;
 									int stackLandingPosA = b.getLanding().getXC();
 									int stackLandingPosB = b.getLanding().getYC();
-									if (landingPosA == stackLandingPosA
-											&& landingPosB == stackLandingPosB) {
+									if (landingPosA == stackLandingPosA && landingPosB == stackLandingPosB) {
 										isValidBlackKingMove = true;
 									}
 								}
 								if (isValidBlackKingMove == true) {
-									JOptionPane.showMessageDialog(null, "You cannot move yourself into check");
+									System.out.println("You cannot move yourself into check");
 									validMove = false;
 								} else {
 									if (piecePresent(e.getX(), e.getY())) {
@@ -1765,7 +1765,6 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 										validMove = true;
 									}
 								}
-
 							}
 						}
 					}
