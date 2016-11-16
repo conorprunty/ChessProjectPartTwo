@@ -1238,17 +1238,17 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			 * the AI Opponent
 			 */
 			if (tmpString.contains("Knight")) {
-				// tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
+				 tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Bishop")) {
-				// tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
+				 tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Pawn")) {
 				tmpMoves = getWhitePawnSquares(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Rook")) {
-				// tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
+				 tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Queen")) {
-				// tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
+				 tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("King")) {
-				// tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
+				 tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
 			}
 
 			while (!tmpMoves.empty()) {
@@ -1298,7 +1298,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			}
 			System.out.println("=============================================================");
 			Border redBorder = BorderFactory.createLineBorder(Color.RED, 3);
-			Move selectedMove = agent.randomMove(testing);
+			Move selectedMove = agent.nextBestMove(testing);
 
 			Square startingPoint = (Square) selectedMove.getStart();
 			Square landingPoint = (Square) selectedMove.getLanding();
