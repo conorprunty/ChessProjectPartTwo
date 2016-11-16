@@ -1811,8 +1811,8 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 								Iterator<Move> iter = blockedKingMoves.iterator();
 								while (iter.hasNext()) {
 									Move b = iter.next();
-									int landingPosA = (e.getX() + 20) / 75;
-									int landingPosB = (e.getY() + 20) / 75;
+									int landingPosA = (e.getX() / 75);
+									int landingPosB = (e.getY() / 75);
 									int stackLandingPosA = b.getLanding().getXC();
 									int stackLandingPosB = b.getLanding().getYC();
 									if (landingPosA == stackLandingPosA && landingPosB == stackLandingPosB) {
