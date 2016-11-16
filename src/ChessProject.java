@@ -926,6 +926,32 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		}
 		return squares;
 	}
+	
+	//method to find all Black pieces
+	private Stack<Square> findBlackPieces() {
+		Stack<Square> squares = new Stack<Square>();
+		String icon;
+		int x;
+		int y;
+		String pieceName;
+		for (int i = 0; i < 600; i += 75) {
+			for (int j = 0; j < 600; j += 75) {
+				y = i / 75;
+				x = j / 75;
+				Component tmp = chessBoard.findComponentAt(j, i);
+				if (tmp instanceof JLabel) {
+					chessPiece = (JLabel) tmp;
+					icon = chessPiece.getIcon().toString();
+					pieceName = icon.substring(0, (icon.length() - 4));
+					if (pieceName.contains("Black")) {
+						Square stmp = new Square(x, y, pieceName);
+						squares.push(stmp);
+					}
+				}
+			}
+		}
+		return squares;
+	}
 
 	// method added to find the Black King
 	private Stack<Square> findBlackKing() {
@@ -1238,17 +1264,17 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			 * the AI Opponent
 			 */
 			if (tmpString.contains("Knight")) {
-				 tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
+				tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Bishop")) {
-				 tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
+				tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Pawn")) {
 				tmpMoves = getWhitePawnSquares(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Rook")) {
-				 tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
+				tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("Queen")) {
-				 tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
+				tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
 			} else if (tmpString.contains("King")) {
-				 tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
+				tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
 			}
 
 			while (!tmpMoves.empty()) {
@@ -1287,6 +1313,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			 * information being printed out to the standard output.
 			 */
 			System.out.println("=============================================================");
+			Stack<Square> findBlackPieces = findBlackPieces();
 			Stack<Move> testing = new Stack<Move>();
 			while (!completeMoves.empty()) {
 				Move tmpMove = (Move) completeMoves.pop();
@@ -1298,7 +1325,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			}
 			System.out.println("=============================================================");
 			Border redBorder = BorderFactory.createLineBorder(Color.RED, 3);
-			Move selectedMove = agent.nextBestMove(testing);
+			Move selectedMove = agent.nextBestMove(testing, findBlackPieces);
 
 			Square startingPoint = (Square) selectedMove.getStart();
 			Square landingPoint = (Square) selectedMove.getLanding();
