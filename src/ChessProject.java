@@ -926,8 +926,8 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		}
 		return squares;
 	}
-	
-	//method to find all Black pieces
+
+	// method to find all Black pieces
 	private Stack<Square> findBlackPieces() {
 		Stack<Square> squares = new Stack<Square>();
 		String icon;
@@ -1225,16 +1225,14 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			Move a = completeMovesAfterPlay.pop();
 			int xCoord = a.getLanding().getXC();
 			int yCoord = a.getLanding().getYC();
-			Iterator<Move> iter = kingMoves.iterator();
-			while (iter.hasNext()) {
-				Move b = iter.next();
-				int zCoord = b.getLanding().getXC();
-				int zzCoord = b.getLanding().getYC();
+
+			for (Move move : kingMoves) {
+				int zCoord = move.getLanding().getXC();
+				int zzCoord = move.getLanding().getYC();
 				if ((xCoord == zCoord) && (yCoord == zzCoord)) {
 					System.out.println(
 							"The Coord of the square(s) where black king can't move are: " + zCoord + ", " + zzCoord);
-					blockedKingMoves.push(b);
-					// isValidBlackKingMove = true;
+					blockedKingMoves.push(move);
 				}
 			}
 		}
@@ -1435,16 +1433,14 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			Move a = completeMovesAfterPlay.pop();
 			int xCoord = a.getLanding().getXC();
 			int yCoord = a.getLanding().getYC();
-			Iterator<Move> iter = kingMoves.iterator();
-			while (iter.hasNext()) {
-				Move b = iter.next();
-				int zCoord = b.getLanding().getXC();
-				int zzCoord = b.getLanding().getYC();
+
+			for (Move move : kingMoves) {
+				int zCoord = move.getLanding().getXC();
+				int zzCoord = move.getLanding().getYC();
 				if ((xCoord == zCoord) && (yCoord == zzCoord)) {
 					System.out.println(
 							"The Coord of the square(s) where black king can't move are: " + zCoord + ", " + zzCoord);
-					blockedKingMoves.push(b);
-					// isValidBlackKingMove = true;
+					blockedKingMoves.push(move);
 				}
 			}
 		}
@@ -1835,17 +1831,17 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 								 * cannot takes its own piece but can take an
 								 * opponents piece.
 								 */
-								Iterator<Move> iter = blockedKingMoves.iterator();
-								while (iter.hasNext()) {
-									Move b = iter.next();
+
+								for (Move move : blockedKingMoves) {
 									int landingPosA = (e.getX() / 75);
 									int landingPosB = (e.getY() / 75);
-									int stackLandingPosA = b.getLanding().getXC();
-									int stackLandingPosB = b.getLanding().getYC();
+									int stackLandingPosA = move.getLanding().getXC();
+									int stackLandingPosB = move.getLanding().getYC();
 									if (landingPosA == stackLandingPosA && landingPosB == stackLandingPosB) {
 										isValidBlackKingMove = true;
 									}
 								}
+
 								if (isValidBlackKingMove == true) {
 									System.out.println("You cannot move yourself into check");
 									validMove = false;
@@ -2248,7 +2244,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		frame.setVisible(true);
 		// Object[] options = { "Random Moves", "Best Next Move", "Based on
 		// Opponents Moves" };
-		Object[] options = { "Random Moves", "Pawns Only", "Based on Opponents Moves" };
+		Object[] options = { "Random Moves", "Attack!", "Based on Opponents Moves" };
 		int n = JOptionPane.showOptionDialog(frame, "Lets play some Chess, choose your AI opponent",
 				"Introduction to AI Continuous Assessment", JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
