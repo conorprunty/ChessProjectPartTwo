@@ -1445,6 +1445,214 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			}
 		}
 	}
+	
+	// AI movements for the 2nd option
+		@SuppressWarnings("unchecked")
+		private void makeAIMove3() {
+			/*
+			 * When the AI Agent decides on a move, a red border shows the square
+			 * from where the move started and the landing square of the move.
+			 */
+			isValidBlackKingMove = false;
+			resetBorders();
+			layeredPane.validate();
+			layeredPane.repaint();
+			Stack<Square> white = findWhitePieces();
+			Stack<Move> completeMoves = new Stack<Move>();
+			Move tmp, tmp2;
+			while (!white.empty()) {
+				Square s = (Square) white.pop();
+				String tmpString = s.getName();
+				Stack<Move> tmpMoves = new Stack<Move>();
+				Stack<?> temporary = new Stack<Object>();
+				/*
+				 * We need to identify all the possible moves that can be made by
+				 * the AI Opponent
+				 */
+				if (tmpString.contains("Knight")) {
+					tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Bishop")) {
+					tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Pawn")) {
+					tmpMoves = getWhitePawnSquares(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Rook")) {
+					tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Queen")) {
+					tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("King")) {
+					tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
+				}
+
+				while (!tmpMoves.empty()) {
+					tmp = (Move) tmpMoves.pop();
+					completeMoves.push(tmp);
+				}
+			}
+			temporary = (Stack<Move>) completeMoves.clone();
+			// TODO undo this once 'check' is fixed to easily show if your king is
+			// in check
+			// getLandingSquares(temporary);
+
+			// temp removal of this method as it prints out all possible moves to
+			// the console
+			// printStack(temporary);
+			/*
+			 * So now we should have a copy of all the possible moves to make in our
+			 * Stack called completeMoves
+			 */
+			if (completeMoves.size() == 0) {
+				/*
+				 * In Chess if you cannot make a valid move but you are not in Check
+				 * this state is referred to as a Stale Mate
+				 */
+				JOptionPane.showMessageDialog(null,
+						"Congratulations, you have placed the AI component in a Stale Mate Position");
+				System.exit(0);
+
+			} else {
+				/*
+				 * Okay, so we can make a move now. We have a stack of all possible
+				 * moves and need to call the correct agent to select one of these
+				 * moves. Lets print out the possible moves to the standard output
+				 * to view what the options are for White. Later when you are
+				 * finished the continuous assessment you don't need to have such
+				 * information being printed out to the standard output.
+				 */
+				System.out.println("=============================================================");
+				Stack<Square> findBlackPieces = findBlackPieces();
+				Stack<Move> testing = new Stack<Move>();
+				while (!completeMoves.empty()) {
+					Move tmpMove = (Move) completeMoves.pop();
+					Square s1 = (Square) tmpMove.getStart();
+					Square s2 = (Square) tmpMove.getLanding();
+					System.out.println("The " + s1.getName() + " can move from (" + s1.getXC() + ", " + s1.getYC()
+							+ ") to the following square: (" + s2.getXC() + ", " + s2.getYC() + ")");
+					testing.push(tmpMove);
+				}
+				System.out.println("=============================================================");
+				Border redBorder = BorderFactory.createLineBorder(Color.RED, 3);
+				Move selectedMove = agent.twoLevelsDeep(testing, findBlackPieces);
+
+				Square startingPoint = (Square) selectedMove.getStart();
+				Square landingPoint = (Square) selectedMove.getLanding();
+				int startX1 = (startingPoint.getXC() * 75) + 20;
+				int startY1 = (startingPoint.getYC() * 75) + 20;
+				int landingX1 = (landingPoint.getXC() * 75) + 20;
+				int landingY1 = (landingPoint.getYC() * 75) + 20;
+				System.out.println("-------- Move " + startingPoint.getName() + " (" + startingPoint.getXC() + ", "
+						+ startingPoint.getYC() + ") to (" + landingPoint.getXC() + ", " + landingPoint.getYC() + ")");
+
+				Component c = (JLabel) chessBoard.findComponentAt(startX1, startY1);
+				Container parent = c.getParent();
+				parent.remove(c);
+				int panelID = (startingPoint.getYC() * 8) + startingPoint.getXC();
+				panels = (JPanel) chessBoard.getComponent(panelID);
+				panels.setBorder(redBorder);
+				parent.validate();
+
+				Component l = chessBoard.findComponentAt(landingX1, landingY1);
+				if (l instanceof JLabel) {
+					Container parentlanding = l.getParent();
+					JLabel awaitingName = (JLabel) l;
+					String agentCaptured = awaitingName.getIcon().toString();
+					if (agentCaptured.contains("King")) {
+						agentwins = true;
+					}
+					parentlanding.remove(l);
+					parentlanding.validate();
+					pieces = new JLabel(new ImageIcon(startingPoint.getName() + ".png"));
+					int landingPanelID = (landingPoint.getYC() * 8) + landingPoint.getXC();
+					panels = (JPanel) chessBoard.getComponent(landingPanelID);
+					panels.add(pieces);
+					panels.setBorder(redBorder);
+					layeredPane.validate();
+					layeredPane.repaint();
+
+					if (agentwins) {
+						JOptionPane.showMessageDialog(null, "The AI Agent has won!");
+						System.exit(0);
+					}
+				} else {
+					pieces = new JLabel(new ImageIcon(startingPoint.getName() + ".png"));
+					int landingPanelID = (landingPoint.getYC() * 8) + landingPoint.getXC();
+					panels = (JPanel) chessBoard.getComponent(landingPanelID);
+					panels.add(pieces);
+					panels.setBorder(redBorder);
+					layeredPane.validate();
+					layeredPane.repaint();
+				}
+				white2Move = false;
+			}
+			// used to get the squares where the AI agent is going to move AFTER
+			// their turn has been taken
+			// will be used to ensure black can't move into check
+			Stack<Square> whiteAfterPlay = findWhitePieces();
+			Stack<Move> completeMovesAfterPlay = new Stack<Move>();
+			Move tmpAfterPlay;
+			while (!whiteAfterPlay.empty()) {
+				Square s = (Square) whiteAfterPlay.pop();
+				String tmpString = s.getName();
+				Stack<Move> tmpMoves = new Stack<Move>();
+				/*
+				 * We need to identify all the possible moves that can be made by
+				 * the AI Opponent
+				 */
+				if (tmpString.contains("Knight")) {
+					tmpMoves = getKnightMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Bishop")) {
+					tmpMoves = getBishopMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Pawn")) {
+					tmpMoves = getWhitePawnAttackingSquares(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Rook")) {
+					tmpMoves = getRookMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("Queen")) {
+					tmpMoves = getQueenMoves(s.getXC(), s.getYC(), s.getName());
+				} else if (tmpString.contains("King")) {
+					tmpMoves = getKingSquares(s.getXC(), s.getYC(), s.getName());
+				}
+
+				while (!tmpMoves.empty()) {
+					tmpAfterPlay = (Move) tmpMoves.pop();
+					completeMovesAfterPlay.push(tmpAfterPlay);
+				}
+			}
+			// getLandingSquares(completeMovesAfterPlay);
+
+			// get all black king moves, to be compared with all available moves in
+			// 'completeMovesAfterPlay'
+			Stack<Square> kingSquare = findBlackKing();
+			Stack<Move> kingMoves = new Stack<Move>();
+			Move tempKingMoves;
+			Square sq = (Square) kingSquare.pop();
+			String tmpStringOfKingMoves = sq.getName();
+			Stack<Move> tmpKingMoves = new Stack<Move>();
+			blockedKingMoves = new Stack<Move>();
+			if (tmpStringOfKingMoves.contains("King")) {
+				tmpKingMoves = getBlackKingSquares(sq.getXC(), sq.getYC(), sq.getName());
+			}
+			while (!tmpKingMoves.isEmpty()) {
+				tempKingMoves = (Move) tmpKingMoves.pop();
+				kingMoves.push(tempKingMoves);
+			}
+			// highlight in green all valid Black King Moves
+			// getLandingSquares(kingMoves);
+
+			while (!completeMovesAfterPlay.isEmpty()) {
+				Move a = completeMovesAfterPlay.pop();
+				int xCoord = a.getLanding().getXC();
+				int yCoord = a.getLanding().getYC();
+
+				for (Move move : kingMoves) {
+					int zCoord = move.getLanding().getXC();
+					int zzCoord = move.getLanding().getYC();
+					if ((xCoord == zCoord) && (yCoord == zzCoord)) {
+						System.out.println(
+								"The Coord of the square(s) where black king can't move are: " + zCoord + ", " + zzCoord);
+						blockedKingMoves.push(move);
+					}
+				}
+			}
+		}
 
 	/*
 	 * This is a method to check if a piece is a Black piece.
@@ -2210,6 +2418,9 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 			if (userChoice == 1) {
 				makeAIMove2();
 			}
+			if (userChoice == 2) {
+				makeAIMove3();
+			}
 		} // end of the else condition
 	}// end of the mouseReleased event.
 
@@ -2254,11 +2465,11 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		} else if (n == 1) {
 			// JOptionPane.showMessageDialog(null, "This section hasn't been
 			// configured yet, please try again later.");
-			// System.exit(1);
 			frame.makeAIMove2();
 		} else if (n == 2) {
-			JOptionPane.showMessageDialog(null, "This section hasn't been configured yet, please try again later.");
-			System.exit(1);
+//			JOptionPane.showMessageDialog(null, "This section hasn't been configured yet, please try again later.");
+//			System.exit(1);
+			frame.makeAIMove3();
 		}
 		frame.userChoice(n);
 	}

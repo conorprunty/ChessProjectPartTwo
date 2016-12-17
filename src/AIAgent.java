@@ -28,20 +28,20 @@ public class AIAgent {
 	}
 
 	public Move nextBestMove(Stack<Move> possibilities, Stack<Square> allBlackSquares) {
-		
+
 		Stack<Move> possibleAttackMoves = new Stack<Move>();
-		
-		for(Move move : possibilities){
+
+		for (Move move : possibilities) {
 			Square s = move.getLanding();
 			int x = s.getXC();
 			int y = s.getYC();
-			for(Square square : allBlackSquares){
+			for (Square square : allBlackSquares) {
 				int x2 = square.getXC();
 				int y2 = square.getYC();
-				if ((x == x2) && (y == y2)){
+				if ((x == x2) && (y == y2)) {
 					Move attackableMove = move;
 					count++;
-					possibleAttackMoves.push(attackableMove);			
+					possibleAttackMoves.push(attackableMove);
 				}
 			}
 		}
@@ -51,24 +51,50 @@ public class AIAgent {
 			possibilities.pop();
 		}
 		Move selectedMove = (Move) possibilities.pop();
-		
-		System.out.println("number of moves available to use in attacking moves is "+possibleAttackMoves.size());
-		
-		if(count>0){
+
+		System.out.println("number of moves available to use in attacking moves is " + possibleAttackMoves.size());
+
+		if (count > 0) {
 			System.out.println("returning an attacking move");
 			count = 0;
 			return possibleAttackMoves.peek();
-		}
-		else{
+		} else {
 			System.out.println("returning a random move");
 			return selectedMove;
 		}
-		
+
 	}
 
-	public Move twoLevelsDeep(Stack possibilities) {
-		Move selectedMove = new Move();
-		return selectedMove;
+	public Move twoLevelsDeep(Stack<Move> firstMove, Stack<Square> secondMove) {
+		Stack<Move> possibleAttackMoves = new Stack<Move>();
+
+		for (Move move : firstMove) {
+			Square s = move.getLanding();
+			int x = s.getXC();
+			int y = s.getYC();
+			for (Square square : secondMove) {
+				int x2 = square.getXC();
+				int y2 = square.getYC();
+				if ((x == x2) && (y == y2)) {
+					Move attackableMove = move;
+					count++;
+					possibleAttackMoves.push(attackableMove);
+				}
+			}
+		}
+
+		int moveID = rand.nextInt(firstMove.size());
+		for (int i = 1; i < (firstMove.size() - (moveID)); i++) {
+			firstMove.pop();
+		}
+		Move selectedMove = (Move) firstMove.pop();
+
+		if (count > 0) {
+			count = 0;
+			return possibleAttackMoves.peek();
+		} else {
+			return selectedMove;
+		}
 	}
 
 }
